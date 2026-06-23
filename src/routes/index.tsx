@@ -4,6 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { Suspense, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { getSiteData } from "@/lib/site-data.functions";
+import logoOss from "@/assets/logo-oss.png";
+import logoCoretax from "@/assets/logo-coretax.png";
 import {
   ShieldCheck,
   FileText,
@@ -102,6 +104,7 @@ function Index() {
     <div className="min-h-screen bg-background text-foreground">
       <Navbar waLink={waLink} businessName={businessName} />
       <Hero waLink={waLink} heroBadge={heroBadge} />
+      <Partners />
       <Services services={data.services} waLink={waLink} />
       <Why />
       <Process />
