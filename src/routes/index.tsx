@@ -29,14 +29,47 @@ const ICONS: Record<string, LucideIcon> = {
 };
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Legalin Care — Jasa Pengurusan NIB & NPWP Cepat & Terpercaya" },
-      { name: "description", content: "Legalin Care membantu UMKM dan perusahaan mengurus NIB, NPWP, dan legalitas usaha dengan cepat, mudah, dan profesional. Pesan via WhatsApp." },
-      { property: "og:title", content: "Legalin Care — Jasa NIB & NPWP" },
-      { property: "og:description", content: "Urus NIB & NPWP tanpa ribet. Konsultasi gratis via WhatsApp." },
-    ],
-  }),
+  head: () => {
+    const title = "Jasa Pengurusan NIB & NPWP Online Cepat — Legalin Care";
+    const description =
+      "Legalin Care: jasa pengurusan NIB, NPWP, dan legalitas usaha untuk UMKM & perusahaan. Proses cepat, transparan, dan profesional. Konsultasi gratis via WhatsApp.";
+    const url = "https://legalin-care.lovable.app/";
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { name: "keywords", content: "jasa NIB, jasa NPWP, pengurusan NIB OSS, NPWP badan, legalitas UMKM, pendirian usaha, izin usaha Indonesia" },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: url },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ProfessionalService",
+            name: "Legalin Care",
+            description,
+            url,
+            areaServed: "ID",
+            serviceType: ["Pengurusan NIB", "Pengurusan NPWP", "Legalitas Usaha"],
+            contactPoint: {
+              "@type": "ContactPoint",
+              telephone: "+6282186371356",
+              contactType: "customer service",
+              availableLanguage: ["Indonesian"],
+            },
+          }),
+        },
+      ],
+    };
+  },
   loader: async ({ context }) => {
     await context.queryClient.ensureQueryData(siteDataQuery);
   },
@@ -100,7 +133,8 @@ function Navbar({ waLink, businessName }: { waLink: WA; businessName: string }) 
       document.body.style.overflow = prev;
     };
   }, [open]);
-  const mounted = typeof document !== "undefined";
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   return (
     <>
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
