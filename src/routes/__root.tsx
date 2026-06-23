@@ -87,8 +87,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "LegalinCare" },
       { name: "twitter:description", content: "Solusi legalitas Nib dan Npwp" },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/dc8e012e-083c-4378-85d7-d66ab73778d0/id-preview-727948c7--ebd34024-2cf0-47e2-b66b-c7674c6020c9.lovable.app-1782050369725.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/dc8e012e-083c-4378-85d7-d66ab73778d0/id-preview-727948c7--ebd34024-2cf0-47e2-b66b-c7674c6020c9.lovable.app-1782050369725.png" },
+      { property: "og:site_name", content: "Legalin Care" },
+      { property: "og:locale", content: "id_ID" },
     ],
     links: [
       {
