@@ -6,6 +6,7 @@ import { createPortal } from "react-dom";
 import { getSiteData } from "@/lib/site-data.functions";
 import logoOss from "@/assets/logo-oss.webp";
 import logoCoretax from "@/assets/logo-coretax.webp";
+import promoBanner from "@/assets/promo-banner.webp.asset.json";
 import {
   ShieldCheck,
   FileText,
@@ -113,11 +114,88 @@ function Index() {
       <CTA waLink={waLink} />
       <Footer businessName={businessName} />
       <FloatingWA waLink={waLink} />
+      <PromoModal waLink={waLink} businessName={businessName} />
     </div>
   );
 }
 
 type WA = (msg: string) => string;
+
+function PromoModal({ waLink, businessName }: { waLink: WA; businessName: string }) {
+  const [mounted, setMounted] = useState(false);
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+    const t = setTimeout(() => setOpen(true), 600);
+    return () => clearTimeout(t);
+  }, []);
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const prev = document.body.style.overflow;
+    if (open) document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+  if (!mounted) return null;
+  return createPortal(
+    <div
+      className={`fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-6 transition-opacity duration-300 ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}
+      style={{ height: "100dvh" }}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Promo Legalin Care"
+    >
+      <div
+        onClick={() => setOpen(false)}
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+      />
+      <div
+        className={`relative w-full max-w-[92vw] sm:max-w-md md:max-w-lg lg:max-w-xl max-h-[90dvh] overflow-hidden rounded-2xl bg-background shadow-2xl transition-transform duration-300 ${open ? "scale-100" : "scale-95"}`}
+      >
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          aria-label="Tutup promo"
+          className="absolute right-3 top-3 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white shadow-lg backdrop-blur transition hover:bg-black/80"
+        >
+          <X className="h-5 w-5" />
+        </button>
+        <a
+          href={waLink(`Halo ${businessName}, saya tertarik dengan penawaran NIB & NPWP yang muncul di pop-up.`)}
+          target="_blank"
+          rel="noreferrer"
+          onClick={() => setOpen(false)}
+          className="block"
+        >
+          <img
+            src={promoBanner.url}
+            alt="Promo Legalin Care — Jasa Pengurusan NIB & NPWP"
+            className="block h-auto w-full object-contain"
+            loading="eager"
+            decoding="async"
+          />
+        </a>
+        <div className="flex flex-col gap-2 border-t border-border bg-background p-3 sm:flex-row sm:items-center sm:justify-between sm:p-4">
+          <p className="text-xs sm:text-sm font-medium text-muted-foreground">
+            Konsultasi gratis sekarang — respon cepat via WhatsApp.
+          </p>
+          <a
+            href={waLink(`Halo ${businessName}, saya tertarik dengan penawaran NIB & NPWP yang muncul di pop-up.`)}
+            target="_blank"
+            rel="noreferrer"
+            onClick={() => setOpen(false)}
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-[color:var(--whatsapp)] px-4 py-2 text-sm font-semibold text-[color:var(--whatsapp-foreground)] shadow-[var(--shadow-card)] transition hover:opacity-90"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Chat Sekarang
+          </a>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
 
 function Navbar({ waLink, businessName }: { waLink: WA; businessName: string }) {
   const [open, setOpen] = useState(false);
