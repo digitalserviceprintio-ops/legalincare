@@ -99,6 +99,62 @@ npx wrangler deploy --config dist/server/wrangler.json
 
 ## Alternatif: Publish via Lovable
 
+---
+
+## Deploy ke Vercel
+
+Nitro (preset auto-detect) mengenali environment Vercel lewat variabel
+`VERCEL=1` yang di-set otomatis oleh Vercel CI, lalu menghasilkan output
+Build Output API v3 di folder `.vercel/output/`. File `vercel.json` di
+root sudah mengunci build & install command supaya Vercel tidak salah
+menebak framework.
+
+### 1. Import Project
+
+Vercel Dashboard → **Add New → Project** → pilih repo GitHub kamu.
+Framework Preset: **Other** (biarkan `vercel.json` yang mengatur).
+
+### 2. Environment Variables
+
+Di **Settings → Environment Variables**, tambahkan (scope: Production +
+Preview + Development):
+
+| Nama | Nilai |
+| --- | --- |
+| `VITE_SUPABASE_URL` | sama seperti `.env` lokal |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | sama seperti `.env` lokal |
+| `VITE_SUPABASE_PROJECT_ID` | sama seperti `.env` lokal |
+| `NITRO_PRESET` | `vercel` *(opsional, fallback)* |
+
+Variabel `VITE_*` dibaca **saat build** (di-inline ke bundle client),
+jadi wajib tersedia sebelum `bun run build` jalan.
+
+### 3. Deploy
+
+Push ke branch produksi → Vercel otomatis:
+
+```bash
+bun install          # installCommand
+bun run build        # buildCommand → menghasilkan .vercel/output/
+```
+
+Vercel membaca `.vercel/output/config.json` (dibuat Nitro) dan
+men-deploy sebagai Serverless/Edge Function + static assets. Tidak perlu
+`vercel deploy` manual.
+
+### 4. Troubleshooting Vercel
+
+| Gejala | Penyebab | Solusi |
+| --- | --- | --- |
+| Build sukses tapi halaman 404 | Preset Nitro tidak ke-detect | Set env `NITRO_PRESET=vercel` di Vercel dashboard, lalu re-deploy |
+| Halaman blank / `VITE_SUPABASE_URL undefined` | Env `VITE_*` belum di-set | Tambahkan di Environment Variables → re-deploy |
+| `[unenv] X is not implemented` | Modul Node yang tidak didukung Serverless/Edge | Ganti dengan API web standar / fetch |
+| Deploy pakai preset Cloudflare (ada `dist/server/wrangler.json`) | `VERCEL` env tidak terbaca | Pastikan build jalan di Vercel CI (bukan lokal) dan `NITRO_PRESET=vercel` di-set |
+
+---
+
+## Alternatif: Publish via Lovable
+
 Tombol **Publish** di editor Lovable melakukan build + deploy otomatis
 ke `https://legalincare.lovable.app` tanpa setup Cloudflare manual.
 Custom domain bisa disambungkan di **Project Settings → Domains**.
