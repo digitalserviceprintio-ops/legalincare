@@ -1,9 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { ShieldCheck, Loader2, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { ensureAdmin } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -17,7 +15,6 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
-  const bootstrap = useServerFn(ensureAdmin);
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,8 +26,6 @@ function AuthPage() {
     setError(null);
     setLoading(true);
     try {
-      // Idempotent: ensures admin account exists with default credentials
-      await bootstrap();
       const email = username.includes("@") ? username : `${username}@legalin.care`;
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;

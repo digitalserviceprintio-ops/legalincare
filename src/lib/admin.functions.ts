@@ -2,37 +2,6 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 
-const ADMIN_EMAIL = "admin@legalin.care";
-const ADMIN_PASSWORD = "Superadmin";
-
-// PUBLIC: idempotent bootstrap so the default admin account always exists.
-// Safe because it only ever (re)creates one fixed account.
-export const ensureAdmin = createServerFn({ method: "POST" }).handler(async () => {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-
-  // List users and find by email (paginate first page is enough for fresh project)
-  const { data: list } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 200 });
-  let user = list?.users.find((u) => u.email === ADMIN_EMAIL);
-
-  if (!user) {
-    const { data: created, error } = await supabaseAdmin.auth.admin.createUser({
-      email: ADMIN_EMAIL,
-      password: ADMIN_PASSWORD,
-      email_confirm: true,
-      user_metadata: { username: "admin" },
-    });
-    if (error) throw new Error(error.message);
-    user = created.user!;
-  }
-
-  // Ensure admin role exists
-  await supabaseAdmin
-    .from("user_roles")
-    .upsert({ user_id: user.id, role: "admin" }, { onConflict: "user_id,role" });
-
-  return { ok: true, email: ADMIN_EMAIL };
-});
-
 // Helper: throw if caller is not admin
 async function assertAdmin(context: { supabase: any; userId: string }) {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
