@@ -7,6 +7,7 @@ import { getSiteData } from "@/lib/site-data.functions";
 import logoOss from "@/assets/logo-oss.webp";
 import logoCoretax from "@/assets/logo-coretax.webp";
 import promoBanner from "@/assets/promo-banner.webp.asset.json";
+import csTeam from "@/assets/cs-team.jpg.asset.json";
 import {
   ShieldCheck,
   FileText,
